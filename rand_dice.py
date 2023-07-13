@@ -46,11 +46,12 @@ def main(inp):
         calls,size,add = handle_input(inp)
     except:
         print("bad input. Plese provide roll in form of 1d20 or 3d6p2.")
-        return [0]
+        return ["invalid input"]
     
     if size < 2:
         print ("That's not a real dice!!!")
-        return [0]
+        return ["invalid input"]
+
 
     out = []
     qc = create_circuit(size)
