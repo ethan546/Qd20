@@ -6,5 +6,11 @@ The result of an example call "3d4" is calculated by creating a 4-state (2 qubit
 Developed on IBM Quantum. Scripts are currently designed to run on AerSimulator for instant runtime, but can easily be converted to run on proper quantum computers.
 
 rand_dice.ipynb is the main script.
+
 rand_dice_testing.ipynb includes framework for testing the quantum circuit, including circuit drawings and histograms.
+
 utils.py includes useful functions for testing.
+
+rand_dice.py is a script format of this project, with CLI enabled
+
+bot.py controls a Discord bot which runs off of the rand_dice.py functions
