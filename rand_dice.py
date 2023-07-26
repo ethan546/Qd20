@@ -10,11 +10,20 @@ def handle_input(strg):
     #this func will take an input of the form 3d6p2
     #then split and return calls = 3, size = 6, add = 2
     split = strg.split("d")
+    
+    #allows for $d20 call
+    if split[0] == '':
+        split[0] = '1'
+
+    #case for add
     if "p" in split[1]:
         split2 = split[1].split("p")
         return(int(split[0]),int(split2[0]),int(split2[1]))
+    elif "m" in split[1]:
+        split2 = split[1].split("m")
+        return(int(split[0]),int(split2[0]),-int(split2[1]))
+    #no add    
     else:
-        #no add
         return(int(split[0]),int(split[1]),0)
 
 
@@ -42,6 +51,8 @@ def count_to_dec(count):
 def main(inp):
     #take in the roll text and run everything!
     #for external usage, outputs all prints in a list
+
+    #grab input, make sure its valid
     try:
         calls,size,add = handle_input(inp)
     except:
@@ -52,7 +63,7 @@ def main(inp):
         print ("That's not a real dice!!!")
         return ["invalid input"]
 
-
+    #make quantum circuit and other vars
     out = []
     qc = create_circuit(size)
     simulator = AerSimulator()
@@ -66,6 +77,7 @@ def main(inp):
             job = simulator.run(compiled_circuit, shots=1)
             result = job.result()
             roll = count_to_dec(result.get_counts())
+            
             #reroll if result is too big
             if roll <= size:
                 reroll = False
@@ -77,6 +89,15 @@ def main(inp):
                 msg = "d"+str(size)+": "+str(roll)
                 print (msg)
                 out.append(msg)
+
+            #nat 20 clause
+            elif size == 20:
+                if roll == 20:
+                    msg = "nat 20!!!"
+                    print (msg)
+                    out.append(msg)
+
+
         total_roll+=roll
     msg = "you rolled "+str(inp)+" and got "+str(total_roll)+"!"
     print (msg)
