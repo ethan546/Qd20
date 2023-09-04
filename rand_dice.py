@@ -1,7 +1,7 @@
 #A .py version of rand_dice.ipynb
 #Uses command line args as input, if provided
 
-from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister, Aer, transpile
+from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister, transpile
 from qiskit_aer import AerSimulator
 import numpy as np
 import sys
@@ -15,13 +15,20 @@ def handle_input(strg):
     if split[0] == '':
         split[0] = '1'
 
-    #case for add
-    if "p" in split[1]:
+    #case for add const
+    if "p" in split[1] :
         split2 = split[1].split("p")
+        return(int(split[0]),int(split2[0]),int(split2[1]))
+    elif "+" in split[1] :
+        split2 = split[1].split("+")
         return(int(split[0]),int(split2[0]),int(split2[1]))
     elif "m" in split[1]:
         split2 = split[1].split("m")
         return(int(split[0]),int(split2[0]),-int(split2[1]))
+    elif "-" in split[1]:
+        split2 = split[1].split("-")
+        return(int(split[0]),int(split2[0]),-int(split2[1]))
+    
     #no add    
     else:
         return(int(split[0]),int(split[1]),0)
@@ -69,6 +76,7 @@ def main(inp):
     simulator = AerSimulator()
     compiled_circuit = transpile(qc, simulator)
     total_roll = add
+    array = []
     
     for _ in range (calls):
         reroll = True
@@ -84,24 +92,27 @@ def main(inp):
             else:
                 continue
 
-            #show each roll individually
-            if calls > 1:
-                msg = "d"+str(size)+": "+str(roll)
+            #show each roll individually -- dissabled now
+            #if calls > 1:
+            #    msg = "d"+str(size)+": "+str(roll)
+            #    print (msg)
+            #    out.append(msg)
+
+            #nat 20 clause
+            if size == 20 and roll == 20:
+                msg = "nat 20!!!"
                 print (msg)
                 out.append(msg)
 
-            #nat 20 clause
-            elif size == 20:
-                if roll == 20:
-                    msg = "nat 20!!!"
-                    print (msg)
-                    out.append(msg)
-
-
         total_roll+=roll
+        array.append(roll)
+    
     msg = "you rolled "+str(inp)+" and got "+str(total_roll)+"!"
     print (msg)
     out.append(msg)
+    if calls > 1:
+        print (array)
+        out.append(array)
     return out
 
 
